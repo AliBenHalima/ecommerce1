@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+
+
+{% block body %}
+
+ <div class="container mt-4">
+    
+
+        <div class="container">
+        <h1>Register Now For Free !!!</h1>
+        <br>
+            
+            <div class="row">
+                <div class="form-row align-items-end" >
+                    <div class="col-md-12 ">
+                       {{ form_widget(registrationForm.username,{'attr':{'class':'type-text'}}) }} 
+                    </div>
+                    <div class="col-md-12">
+                        {{ form_row(registrationForm.password) }}
+                    </div>
+                       <div class="col-md-12">
+                        {{ form_row(registrationForm.sexe) }}
+                    </div>
+                       <div class="col-md-12">
+                        {{ form_row(registrationForm.nom) }}
+                    </div>
+                      <div class="col-md-12">
+                        {{ form_row(registrationForm.prenom) }}
+                    </div>
+                      <div class="col-md-12">
+                        {{ form_row(registrationForm.tel) }}
+                    </div>
+                       <div class="col-md-12">
+                        {{ form_row(registrationForm.adresse) }}
+                    </div>
+                    
+                        <div class="col-md-12">
+                        {{ form_row(registrationForm.photo) }}
+                    </div>
+                          <div class="col-md-12">
+                        {{ form_row(registrationForm.imageFile) }}
+                    </div>
+
+                      <div class="col-md-12">
+                        <div class="form-group">
+                            <button class="btn btn-primary">Register !</button>
+                        </div>
+
+                    </div>
+
+                </div>
+                </div>
+           
+
+        </div>
+   
+{% endblock %}
