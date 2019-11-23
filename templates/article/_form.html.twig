@@ -1,0 +1,10 @@
+{{ form_start(form) }}
+     {{ form_row(form.art_description) }}
+     {{ form_row(form.art_prix) }}
+     {{ form_row(form.art_qte) }}
+     {{ form_row(form.art_remise) }}
+     {{ form_row(form.art_imageFile) }}
+     
+
+    <button class="btn">{{ button_label|default('Save') }}</button>
+{{ form_end(form) }}

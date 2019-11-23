@@ -12,11 +12,11 @@
         <div class="container">
         <h1>Register Now For Free !!!</h1>
         <br>
-            
+            {{ form_start(registrationForm) }}
             <div class="row">
                 <div class="form-row align-items-end" >
                     <div class="col-md-12 ">
-                       {{ form_widget(registrationForm.username,{'attr':{'class':'type-text'}}) }} 
+                       {{ form_row(registrationForm.username,{'attr':{'class':'type-text'}}) }} 
                     </div>
                     <div class="col-md-12">
                         {{ form_row(registrationForm.password) }}
@@ -36,10 +36,11 @@
                        <div class="col-md-12">
                         {{ form_row(registrationForm.adresse) }}
                     </div>
-                    
+                    {#
                         <div class="col-md-12">
                         {{ form_row(registrationForm.photo) }}
                     </div>
+                    #}
                           <div class="col-md-12">
                         {{ form_row(registrationForm.imageFile) }}
                     </div>
@@ -52,6 +53,7 @@
                     </div>
 
                 </div>
+                {{ form_end(registrationForm) }}
                 </div>
            
 

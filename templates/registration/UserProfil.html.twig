@@ -1,0 +1,70 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}My Profil{% endblock %}
+
+{% block body %}
+<div class="container">
+<div class="col p-5">
+<h1 class="text-center">MyProfil </h1>
+<div class="text-center">
+  {% if user.filename %}
+        {#<img src="{{ vich_uploader_asset(property,'imageFile') | imagine_filter('thumb') }}" alt="card-img-top" style="width: 100%; height: auto;">
+   #}
+    <img src="/images/properties/{{ user.filename }}" class="rounded" alt="card-img-top" style="height: 200px;">
+   {# {% else %}
+    <img src="{{'/images/properties/empty.jpg'}}" alt="card-img-top" style="width: 100%; height: auto;">
+    #}
+    {% endif %}
+    </div>
+
+{{ form_start(form) }}
+            <div class="row">
+                <div class="form-row align-items-end" >
+                    <div class="col-md-6 px-5 ">
+                       {{ form_row(form.username,{'attr':{'class':''}}) }} 
+                    </div>
+                  <div class="col-md-6 px-5 ">
+                        {{ form_row(form.password) }}
+                    </div>
+                      <div class="col-md-6 px-5 ">
+                        {{ form_row(form.sexe) }}
+                    </div>
+                   <div class="col-md-6 px-5 ">
+                        {{ form_row(form.nom) }}
+                    </div>
+                   <div class="col-md-6 px-5 ">
+                        {{ form_row(form.prenom) }}
+                    </div>
+                  <div class="col-md-6 px-5 ">
+                        {{ form_row(form.tel) }}
+                    </div>
+                      <div class="col-md-6 px-5 ">
+                        {{ form_row(form.adresse) }}
+                    </div>
+                    {#
+                        <div class="col-md-12">
+                        {{ form_row(registrationForm.photo) }}
+                    </div>
+                    #}
+                       <div class="col-md-6 px-5 ">
+                        {{ form_row(form.imageFile) }}
+                    </div>
+
+                     <div class="col-md-6 px-5 ">
+                        <div class="form-group">
+                            <button class="btn btn-primary">Save !</button>
+                        </div>
+
+                    </div>
+
+                </div>
+                {{ form_end(form) }}
+
+
+
+
+
+</div>
+</div>
+
+{% endblock %}

@@ -18,9 +18,11 @@
     <link rel="stylesheet" href="css/slicknav.min.css" type="text/css">
     <link rel="stylesheet" href="css/style.css" type="text/css">
         {% block stylesheets %}{% endblock %}
+    
     </head>
+
     <body>
-        {% block body %}
+       {% block body %}
          <!-- Page Preloder -->
     <div id="preloder">
         <div class="loader"></div>
@@ -53,8 +55,16 @@
                     </a>
                 </div>
                 <div class="user-access">
-                    <a href="#">Register</a>
-                    <a href="#" class="in">Sign in</a>
+                    <a href="{{path('app_register')}}">Register</a>
+                    
+                     {% if app.user %}
+                    <a href="{{ path('logout') }}" class="in" >Disconnect</a>
+                    <a href="#" class="in" >My Profil</a> 
+
+              {% else %}
+              <a href="{{ path('security_login') }}" class="in" >Connect</a>
+           
+        {% endif %}
                 </div>
                 <nav class="main-menu mobile-menu">
                     <ul>

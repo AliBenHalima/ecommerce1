@@ -12,7 +12,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ArticleRepository")
+ * @UniqueEntity(fields={"id"}, message="There is already an account with this id")
+ * @Vich\Uploadable
  */
+
 class Article 
 {
     /**
@@ -44,15 +47,15 @@ class Article
 
    /**
      * @var string|null
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=255, nullable=false)
      */
     private $art_filename;
     /** 
-    
+
 
     * @var File|null
     * 
-    * @Vich\UploadableField(mapping="property_image", fileNameProperty="filename")
+    * @Vich\UploadableField(mapping="property_image", fileNameProperty="art_filename")
     */
    private $art_imageFile;
 
@@ -113,12 +116,17 @@ class Article
 
         return $this;
     }
-
+    /**
+     * @return string|null
+     */
     public function getArtFilename(): ?string
     {
         return $this->art_filename;
     }
-
+/**
+     * @param string|null $art_filename
+     * @return Article
+     */
     public function setArtFilename(?string $art_filename): self
     {
         $this->art_filename = $art_filename;
@@ -147,9 +155,9 @@ class Article
 
     /**
      * @param null|File $imageFile
-     * @return User
+     * @return Article
      */
-    public function setArtImageFile(?File $art_imageFile): User
+    public function setArtImageFile(?File $art_imageFile): Article
     {
         $this->art_imageFile = $art_imageFile;
         if ($this->art_imageFile instanceof UploadedFile) {

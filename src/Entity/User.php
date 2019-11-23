@@ -15,7 +15,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @UniqueEntity(fields={"username"}, message="There is already an account with this username")
  * @Vich\Uploadable
  */
-class User implements UserInterface
+class User implements UserInterface,\Serializable
 {
     /**
      * @ORM\Id()
@@ -80,8 +80,6 @@ class User implements UserInterface
     
 
     * @var File|null
-    * @Assert\Image(
-    *     mimeTypes="image/jpeg"
     * )
     * @Vich\UploadableField(mapping="property_image", fileNameProperty="filename")
     */
@@ -92,8 +90,7 @@ class User implements UserInterface
         return $this->id;
     }
 
-
-    /**
+     /**
      * @return string|null
      */
     public function getFilename(): ?string
@@ -111,6 +108,7 @@ class User implements UserInterface
         return $this;
     }
 
+   
     /**
      * @return File|null
      */
@@ -156,8 +154,10 @@ class User implements UserInterface
     {
         $roles = $this->roles;
         // guarantee every user at least has ROLE_USER
+        if(in_array('ROLE_USER',$roles)===false)
+        {
         $roles[] = 'ROLE_USER';
-
+        }
         return array_unique($roles);
     }
 
@@ -284,5 +284,39 @@ class User implements UserInterface
     }
 
     
+
+    
+   
+
+    /**
+     * String representation of object
+     * @link https://php.net/manual/en/serializable.serialize.php
+     * @return string the string representation of the object or null
+     * @since 5.1.0
+     */
+    public function serialize()
+    {
+        return serialize([
+            $this->id,
+            $this->username,
+            $this->password
+        ]);
+    }
+
+    /**
+     * Constructs the object
+     * @link https://php.net/manual/en/serializable.unserialize.php
+     * @param string $serialized <p>
+     * The string representation of the object.
+     * </p>
+     * @return void
+     * @since 5.1.0
+     */
+    public function unserialize($serialized)
+    {
+        list($this->id,
+            $this->username,
+            $this->password) = unserialize($serialized,['allowed_classes'=> false]);
+    }
 
 }

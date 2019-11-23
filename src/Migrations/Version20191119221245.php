@@ -44,6 +44,5 @@ final class Version20191119221245 extends AbstractMigration
         $this->addSql('DROP TABLE mark');
         $this->addSql('DROP TABLE message');
         $this->addSql('DROP TABLE visiteur');
-        $this->addSql('ALTER TABLE user ADD photo VARCHAR(255) CHARACTER SET utf8mb4 NOT NULL COLLATE `utf8mb4_unicode_ci`');
     }
 }

@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Controller;
-
+use Doctrine\ORM\Mapping as ORM;
 use App\Entity\User;
 use App\Form\RegistrationFormType;
 use App\Form\ResgisterType;
@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+
 
 class RegistrationController extends AbstractController
 {
@@ -25,11 +26,9 @@ class RegistrationController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             // encode the plain password
             $user->setPassword(
-                $passwordEncoder->encodePassword(
-                    $user,
-                    $form->get('password')->getData()
-                )
-            );
+            $passwordEncoder->encodePassword($user,$form->get('password')->getData()) //similar to $user->getPassword()
+
+                );
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
@@ -52,6 +51,28 @@ class RegistrationController extends AbstractController
     {
 
     return $this->render('base.html.twig');
+    }
+
+    /**
+     * @Route("/profil/{id}", name="profil")
+     * @param Request $request
+     * @param User $user
+     */
+    public function EditUser(User $user ,Request $request): Response
+    {  
+        $form = $this->createForm(ResgisterType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
+
+            return $this->redirectToRoute('/');
+        }
+
+    return $this->render('registration/UserProfil.html.twig',
+    ['user'=>$user,
+    'form' => $form->createView(),
+    ]);
     }
    
 }
