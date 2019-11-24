@@ -5,16 +5,25 @@ namespace App\Controller;
 use App\Entity\Article;
 use App\Form\ArticleType;
 use App\Repository\ArticleRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
  * @Route("/article")
  */
 class ArticleController extends AbstractController
 {
+    public function __construct(ArticleRepository $repository, ObjectManager $em)
+    {
+        $this->repository=$repository;
+        $this->em = $em;
+     
+
+    }
     /**
      * @Route("/", name="article_index", methods={"GET"})
      */
@@ -47,6 +56,26 @@ class ArticleController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+    /**
+         * @Route("/ShowAll", name="property.ShowAll")
+         * @return Response
+         * @param Request $request
+         * @param ArticleRepository $repository
+         */
+        public function ShowAll(PaginatorInterface $paginator, Request $request,ArticleRepository $repository):Response
+        { 
+             
+             $articles = $paginator->paginate(
+             $this->repository->FindArticles(),$request->query->getInt('page', 1), /*page number*/
+            6); /*limit per page*/
+    
+            return $this->render('article/ShowAll.html.twig',[
+                'articles'=> $articles
+                
+         
+            ]);
+    
+        }
 
     /**
      * @Route("/{id}", name="article_show", methods={"GET"})
@@ -77,6 +106,7 @@ class ArticleController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+     
 
     /**
      * @Route("/{id}", name="article_delete", methods={"DELETE"})
@@ -91,4 +121,5 @@ class ArticleController extends AbstractController
 
         return $this->redirectToRoute('article_index');
     }
+   
 }

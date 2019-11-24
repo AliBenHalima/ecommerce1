@@ -154,7 +154,7 @@ class Article
     }
 
     /**
-     * @param null|File $imageFile
+     * @param null|File $art_imageFile
      * @return Article
      */
     public function setArtImageFile(?File $art_imageFile): Article

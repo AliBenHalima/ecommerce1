@@ -1,19 +1,29 @@
 <?php
 
 namespace App\Controller;
-use Doctrine\ORM\Mapping as ORM;
 use App\Entity\User;
-use App\Form\RegistrationFormType;
 use App\Form\ResgisterType;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Doctrine\ORM\Mapping as ORM;
+use App\Form\RegistrationFormType;
+use App\Repository\UserRepository;
+use App\Repository\ArticleRepository;
 use Symfony\Component\HttpFoundation\Request;
+use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 
 class RegistrationController extends AbstractController
 {
+    public function __construct(UserRepository $userrepository, ObjectManager $em)
+    {
+        $this->userrepository=$userrepository;
+        $this->em = $em;
+     
+
+    }
     /**
      * @Route("/register", name="app_register")
      */
@@ -36,7 +46,7 @@ class RegistrationController extends AbstractController
 
             // do anything else you need here, like send an email
 
-            return $this->redirectToRoute('app_register');
+            return $this->redirectToRoute('base');
         }
 
         return $this->render('registration/register.html.twig', [
@@ -45,12 +55,20 @@ class RegistrationController extends AbstractController
     }
 
   /**
-     * @Route("/", name="base")
+     * @Route("/", name="base" ,methods={"GET"})
      */
-    public function index(): Response
+    public function index(UserRepository $userrepository): Response
     {
+        if($this->getUser()==NULL){ //getUser() returns the Current User yeeey
+            return $this->render('base.html.twig');
+        }
+        else{
+        }
+        return $this->render('base.html.twig', [
+        'user' => $userrepository->find($this->getUser()->getId()),
+        ]);
 
-    return $this->render('base.html.twig');
+   
     }
 
     /**

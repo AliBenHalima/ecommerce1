@@ -58,8 +58,9 @@
                     <a href="{{path('app_register')}}">Register</a>
                     
                      {% if app.user %}
+                    
                     <a href="{{ path('logout') }}" class="in" >Disconnect</a>
-                    <a href="#" class="in" >My Profil</a> 
+                    <a href="{{ path('profil',{'id': user.id})}}" class="in" >My Profil</a> 
 
               {% else %}
               <a href="{{ path('security_login') }}" class="in" >Connect</a>
