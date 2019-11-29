@@ -6,7 +6,6 @@ use App\Form\ResgisterType;
 use Doctrine\ORM\Mapping as ORM;
 use App\Form\RegistrationFormType;
 use App\Repository\UserRepository;
-use App\Repository\ArticleRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\Response;
@@ -92,5 +91,6 @@ class RegistrationController extends AbstractController
     'form' => $form->createView(),
     ]);
     }
-   
+    
+
 }

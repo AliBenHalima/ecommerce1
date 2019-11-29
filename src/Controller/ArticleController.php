@@ -121,5 +121,24 @@ class ArticleController extends AbstractController
 
         return $this->redirectToRoute('article_index');
     }
+    
+    /**
+     * @Route("/product/{id}", name="product" ,methods={"GET"})
+     * @param Article $article
+     */
+    public function product(Article $article,ArticleRepository $articlerep): Response
+    {
+            //$articID = $article->getId();
+          
+        return $this->render('product.html.twig',[
+            'article' =>$article,
+          'Nextarticle1'=>$articlerep->find(($article->getId()) +1),
+          'Nextarticle2'=>$articlerep->find(($article->getId()) +2),
+          'Nextarticle3'=>$articlerep->find(($article->getId()) +3),
+          'Nextarticle4'=>$articlerep->find(($article->getId()) +4)
+            ]);
+
+    }
+   
    
 }
