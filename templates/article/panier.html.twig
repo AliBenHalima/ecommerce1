@@ -1,0 +1,45 @@
+{% extends "base.html.twig" %}
+ {%   block body  %}
+ <div class="container">
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Product Name</th>
+      <th scope="col">Price</th>
+      <th scope="col">Amount</th>
+     <th scope="col">Total</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% if items is defined %}
+      
+  
+  {% for item in items %}
+
+    <tr>
+      <th scope="row">{{item.product.artDescription}}</th>
+      <th scope="row">{{item.product.artPrix}}</th>
+      <th scope="row">{{item.qte}}</th>
+      <th scope="row">{{item.product.artPrix * item.qte }}</th>
+      <th scope="row"> <a href="{{path('panier_remove',{'id': item.product.id}) }}" > <i class="fa fa-trash" aria-hidden="true"></i> </a>
+
+
+    </tr>
+
+    {% endfor %}
+{% endif %}
+ 
+  </tbody>
+  <tfooter>
+    <tr>
+        <td colspan="3" >  <h4> total : </h4>  </td>
+        <td> <h4> {{ total }}  </h4></td>
+        <td> <a href="#" class="btn btn-success" > Pay <i class="fa fa-cc-paypal" ></i> </a>
+  </tfooter>
+</table>
+</div>
+
+
+
+    
+{% endblock %}

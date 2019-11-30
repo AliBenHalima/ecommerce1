@@ -40,6 +40,11 @@ class Article
      */
     private $art_qte;
 
+     /**
+     * @ORM\Column(type="float")
+     */
+    private $art_total;
+
     /**
      * @ORM\Column(type="float", nullable=true)
      */
@@ -180,6 +185,18 @@ class Article
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function getArtTotal(): ?float
+    {
+        return $this->art_total;
+    }
+
+    public function setArtTotal(float $art_total): self
+    {
+        $this->art_total = $art_total;
+
+        return $this;
     }
 
 }

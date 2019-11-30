@@ -10,6 +10,8 @@
         rel="stylesheet">
 
     <!-- Css Styles -->
+  
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
     <link rel="stylesheet" href="css/font-awesome.min.css" type="text/css">
     <link rel="stylesheet" href="css/nice-select.css" type="text/css">
@@ -23,6 +25,7 @@
     
     <body>
    {% block body %}
+  
          <!-- Page Preloder -->
     <div id="preloder">
         <div class="loader"></div>
@@ -46,25 +49,19 @@
                 <div class="logo">
                     <a href="./index.html"><img src="img/logo.png" alt=""></a>
                 </div>
-                <div class="header-right">
-                    <img src="img/icons/search.png" alt="" class="search-trigger">
-                    <img src="img/icons/man.png" alt="">
-                    <a href="#">
-                        <img src="img/icons/bag.png" alt="">
-                        <span>2</span>
-                    </a>
-                </div>
+               
                 <div class="user-access">
-                    <a href="{{path('app_register')}}">Register</a>
+                   
                     
-                     {% if app.user %}
-                    
-                    <a href="{{ path('logout') }}" class="in" >Disconnect</a>
-                    <a href="{{ path('profil',{'id': user.id})}}" class="in" >My Profil</a> 
-
+                     {% if not app.user %}
+                     <a href="{{path('app_register')}}">Register</a>
+                      <a href="{{ path('security_login') }}" class="in" >Connect</a>
+                  
               {% else %}
-              <a href="{{ path('security_login') }}" class="in" >Connect</a>
-           
+             
+             <a href="{{ path('logout') }}"  >Disconnect</a>
+                    <a href="{{ path('profil',{'id': user.id})}}" class="in" >My Profil</a>
+                    <a href="{{ path('panier_index',{'id': user.id})}}" class="in" >My Cart</a>
         {% endif %}
                 </div>
                 <nav class="main-menu mobile-menu">
@@ -78,7 +75,7 @@
                             </ul>
                         </li>
                         
-                        <li><a href="./check-out.html">Blog</a></li>
+                        <li><a href="{{path('property.ShowAll')}}"> All Products </a></li>
                         <li><a href="./contact.html">Contact</a></li>
                     </ul>
                 </nav>

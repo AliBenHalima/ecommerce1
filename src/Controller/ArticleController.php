@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
@@ -19,10 +20,8 @@ class ArticleController extends AbstractController
 {
     public function __construct(ArticleRepository $repository, ObjectManager $em)
     {
-        $this->repository=$repository;
+        $this->repository = $repository;
         $this->em = $em;
-     
-
     }
     /**
      * @Route("/", name="article_index", methods={"GET"})
@@ -57,25 +56,88 @@ class ArticleController extends AbstractController
         ]);
     }
     /**
-         * @Route("/ShowAll", name="property.ShowAll")
-         * @return Response
-         * @param Request $request
-         * @param ArticleRepository $repository
-         */
-        public function ShowAll(PaginatorInterface $paginator, Request $request,ArticleRepository $repository):Response
-        { 
-             
-             $articles = $paginator->paginate(
-             $this->repository->FindArticles(),$request->query->getInt('page', 1), /*page number*/
-            6); /*limit per page*/
-    
-            return $this->render('article/ShowAll.html.twig',[
-                'articles'=> $articles
-                
-         
-            ]);
-    
+     * @Route("/ShowAll", name="property.ShowAll")
+     * @return Response
+     * @param Request $request
+     * @param ArticleRepository $repository
+     */
+    public function ShowAll(PaginatorInterface $paginator, Request $request, ArticleRepository $repository): Response
+    {
+
+        $articles = $paginator->paginate(
+            $this->repository->FindArticles(),
+            $request->query->getInt('page', 1), /*page number*/
+            6
+        ); /*limit per page*/
+
+        return $this->render('article/ShowAll.html.twig', [
+            'articles' => $articles
+
+
+        ]);
+    }
+
+       /**
+     * @Route("/panier" , name="panier_index") 
+     */
+    public function panierIndex(SessionInterface $session, ArticleRepository $articleRepository)
+    {
+        $panier = $session->get('panier', []);
+        $panierWithData = [];
+        foreach ($panier as $id => $qte) {
+            $panierWithData[] = [
+                'product' => $articleRepository->find($id),
+                'qte' => $qte
+            ];
         }
+        $total=0;
+        foreach ($panier as $id => $qte){
+            $totalprod = $qte * $articleRepository->find($id)->getArtPrix() ;
+            $total = $total + $totalprod;
+
+        }
+        // dd($panierWithData);
+        
+        return $this->render('article/panier.html.twig', [
+            'items' => $panierWithData,
+            'total' => $total
+            //'article' => $panierWithData['product']
+        ]);
+    }
+
+    /**
+     * @Route("/panier/add/{id}" , name="panier_add") 
+     */
+    public function add($id, SessionInterface $session)
+    {
+        $panier = $session->get('panier', []);
+        if (!empty($panier[$id])) {
+            $panier[$id]++;
+        } else {
+            $panier[$id] = 1;
+        }
+        $session->set('panier', $panier);
+       // dd($panier);
+       return $this->redirectToRoute('property.ShowAll');
+             //  return $this->render('article/panier.html.twig', [
+         //   'panier' => $panier
+       // ]);
+    }
+    /**
+     * @Route("/panier/remove/{id}" , name="panier_remove")
+     */
+    
+    public function remove($id, SessionInterface $session)
+    {
+        $panier = $session->get('panier', []);
+        if (!empty($panier[$id])) {
+            unset($panier[$id]);
+        }
+        $session->set('panier',$panier);
+        return $this->redirectToRoute('panier_index');
+    }
+    
+ 
 
     /**
      * @Route("/{id}", name="article_show", methods={"GET"})
@@ -106,14 +168,14 @@ class ArticleController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
-     
+
 
     /**
      * @Route("/{id}", name="article_delete", methods={"DELETE"})
      */
     public function delete(Request $request, Article $article): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$article->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $article->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($article);
             $entityManager->flush();
@@ -121,24 +183,21 @@ class ArticleController extends AbstractController
 
         return $this->redirectToRoute('article_index');
     }
-    
+
     /**
      * @Route("/product/{id}", name="product" ,methods={"GET"})
      * @param Article $article
      */
-    public function product(Article $article,ArticleRepository $articlerep): Response
+    public function product(Article $article, ArticleRepository $articlerep): Response
     {
-            //$articID = $article->getId();
-          
-        return $this->render('product.html.twig',[
-            'article' =>$article,
-          'Nextarticle1'=>$articlerep->find(($article->getId()) +1),
-          'Nextarticle2'=>$articlerep->find(($article->getId()) +2),
-          'Nextarticle3'=>$articlerep->find(($article->getId()) +3),
-          'Nextarticle4'=>$articlerep->find(($article->getId()) +4)
-            ]);
+        //$articID = $article->getId();
 
+        return $this->render('product.html.twig', [
+            'article' => $article,
+            'Nextarticle1' => $articlerep->find(($article->getId()) + 1),
+            'Nextarticle2' => $articlerep->find(($article->getId()) + 2),
+            'Nextarticle3' => $articlerep->find(($article->getId()) + 3),
+            'Nextarticle4' => $articlerep->find(($article->getId()) + 4)
+        ]);
     }
-   
-   
 }

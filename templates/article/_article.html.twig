@@ -8,6 +8,8 @@
     {% endif %}
     <div class="card-body">
         <a href="{{path('product',{'id': article.id})}}" class="card-title text-danger text-center"> {{ article.artDescription }} </a>
+        
+<a href="{{path('panier_add',{'id': article.id})}}" class="btn btn-success float-right" > <i class="fal fa-shopping-cart"> </i>ADD </a>
        
            {# <a href="{{ path('property.show', {'id': article.id}) }}"> 
                 
