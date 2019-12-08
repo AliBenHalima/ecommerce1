@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -15,7 +17,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @UniqueEntity(fields={"username"}, message="There is already an account with this username")
  * @Vich\Uploadable
  */
-class User implements UserInterface,\Serializable
+class User implements UserInterface, \Serializable
 {
     /**
      * @ORM\Id()
@@ -65,7 +67,7 @@ class User implements UserInterface,\Serializable
      */
     private $adresse;
 
-       /**
+    /**
      * @ORM\Column(type="datetime")
      */
     private $updated_at;
@@ -79,18 +81,29 @@ class User implements UserInterface,\Serializable
     /** 
     
 
-    * @var File|null
-    * )
-    * @Vich\UploadableField(mapping="property_image", fileNameProperty="filename")
-    */
-   private $imageFile;
+     * @var File|null
+     * )
+     * @Vich\UploadableField(mapping="property_image", fileNameProperty="filename")
+     */
+    private $imageFile;
+    /**
+     * Undocumented variable
+     *
+     * @ORM\OneToMany(targetEntity="App\Entity\ArticleLike" , mappedBy="user")
+     */
+    private $userLikes;
+
+    public function __construct()
+    {
+        $this->userLikes = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-     /**
+    /**
      * @return string|null
      */
     public function getFilename(): ?string
@@ -108,7 +121,7 @@ class User implements UserInterface,\Serializable
         return $this;
     }
 
-   
+
     /**
      * @return File|null
      */
@@ -154,9 +167,8 @@ class User implements UserInterface,\Serializable
     {
         $roles = $this->roles;
         // guarantee every user at least has ROLE_USER
-        if(in_array('ROLE_USER',$roles)===false)
-        {
-        $roles[] = 'ROLE_USER';
+        if (in_array('ROLE_USER', $roles) === false) {
+            $roles[] = 'ROLE_USER';
         }
         return array_unique($roles);
     }
@@ -259,7 +271,7 @@ class User implements UserInterface,\Serializable
 
         return $this;
     }
-/*
+    /*
     public function getPhoto(): ?string
     {
         return $this->photo;
@@ -283,10 +295,10 @@ class User implements UserInterface,\Serializable
         return $this;
     }
 
-    
 
-    
-   
+
+
+
 
     /**
      * String representation of object
@@ -314,9 +326,36 @@ class User implements UserInterface,\Serializable
      */
     public function unserialize($serialized)
     {
-        list($this->id,
+        list(
+            $this->id,
             $this->username,
-            $this->password) = unserialize($serialized,['allowed_classes'=> false]);
+            $this->password
+        ) = unserialize($serialized, ['allowed_classes' => false]);
     }
 
+    /**
+     * @return Collection|User[]
+     */
+    public function getUserLikes(): Collection
+    {
+        return $this->userLikes;
+    }
+
+    public function addUserLike(User $userLike): self
+    {
+        if (!$this->userLikes->contains($userLike)) {
+            $this->userLikes[] = $userLike;
+        }
+
+        return $this;
+    }
+
+    public function removeUserLike(User $userLike): self
+    {
+        if ($this->userLikes->contains($userLike)) {
+            $this->userLikes->removeElement($userLike);
+        }
+
+        return $this;
+    }
 }

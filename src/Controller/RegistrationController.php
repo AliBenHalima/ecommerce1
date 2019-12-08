@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Controller;
+
 use App\Entity\User;
 use App\Form\ResgisterType;
 use Doctrine\ORM\Mapping as ORM;
@@ -18,11 +19,14 @@ class RegistrationController extends AbstractController
 {
     public function __construct(UserRepository $userrepository, ObjectManager $em)
     {
-        $this->userrepository=$userrepository;
+        $this->userrepository = $userrepository;
         $this->em = $em;
-     
-
     }
+
+    // public function users()
+    // {
+    //     for($i=1 ; $i<$this->getUser())
+    //  }
     /**
      * @Route("/register", name="app_register")
      */
@@ -35,9 +39,9 @@ class RegistrationController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             // encode the plain password
             $user->setPassword(
-            $passwordEncoder->encodePassword($user,$form->get('password')->getData()) //similar to $user->getPassword()
+                $passwordEncoder->encodePassword($user, $form->get('password')->getData()) //similar to $user->getPassword()
 
-                );
+            );
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
@@ -53,21 +57,17 @@ class RegistrationController extends AbstractController
         ]);
     }
 
-  /**
+    /**
      * @Route("/", name="base" ,methods={"GET"})
      */
     public function index(UserRepository $userrepository): Response
     {
-        if($this->getUser()==NULL){ //getUser() returns the Current User yeeey
+        if ($this->getUser() == NULL) { //getUser() returns the Current User yeeey
             return $this->render('base.html.twig');
-        }
-        else{
-        }
+        } else { }
         return $this->render('base.html.twig', [
-        'user' => $userrepository->find($this->getUser()->getId()),
+            'user' => $userrepository->find($this->getUser()->getId()),
         ]);
-
-   
     }
 
     /**
@@ -75,8 +75,8 @@ class RegistrationController extends AbstractController
      * @param Request $request
      * @param User $user
      */
-    public function EditUser(User $user ,Request $request): Response
-    {  
+    public function EditUser(User $user, Request $request): Response
+    {
         $form = $this->createForm(ResgisterType::class, $user);
         $form->handleRequest($request);
 
@@ -86,11 +86,12 @@ class RegistrationController extends AbstractController
             return $this->redirectToRoute('/');
         }
 
-    return $this->render('registration/UserProfil.html.twig',
-    ['user'=>$user,
-    'form' => $form->createView(),
-    ]);
+        return $this->render(
+            'registration/UserProfil.html.twig',
+            [
+                'user' => $user,
+                'form' => $form->createView(),
+            ]
+        );
     }
-    
-
 }

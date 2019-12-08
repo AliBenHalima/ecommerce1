@@ -3,7 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Article;
+use App\Entity\ArticleLike;
+use App\Entity\User;
 use App\Form\ArticleType;
+use App\Repository\ArticleLikeRepository;
 use App\Repository\ArticleRepository;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -77,7 +80,7 @@ class ArticleController extends AbstractController
         ]);
     }
 
-       /**
+    /**
      * @Route("/panier" , name="panier_index") 
      */
     public function panierIndex(SessionInterface $session, ArticleRepository $articleRepository)
@@ -90,14 +93,13 @@ class ArticleController extends AbstractController
                 'qte' => $qte
             ];
         }
-        $total=0;
-        foreach ($panier as $id => $qte){
-            $totalprod = $qte * $articleRepository->find($id)->getArtPrix() ;
+        $total = 0;
+        foreach ($panier as $id => $qte) {
+            $totalprod = $qte * $articleRepository->find($id)->getArtPrix();
             $total = $total + $totalprod;
-
         }
         // dd($panierWithData);
-        
+
         return $this->render('article/panier.html.twig', [
             'items' => $panierWithData,
             'total' => $total
@@ -117,27 +119,27 @@ class ArticleController extends AbstractController
             $panier[$id] = 1;
         }
         $session->set('panier', $panier);
-       // dd($panier);
-       return $this->redirectToRoute('property.ShowAll');
-             //  return $this->render('article/panier.html.twig', [
-         //   'panier' => $panier
-       // ]);
+        // dd($panier);
+        return $this->redirectToRoute('property.ShowAll');
+        //  return $this->render('article/panier.html.twig', [
+        //   'panier' => $panier
+        // ]);
     }
     /**
      * @Route("/panier/remove/{id}" , name="panier_remove")
      */
-    
+
     public function remove($id, SessionInterface $session)
     {
         $panier = $session->get('panier', []);
         if (!empty($panier[$id])) {
             unset($panier[$id]);
         }
-        $session->set('panier',$panier);
+        $session->set('panier', $panier);
         return $this->redirectToRoute('panier_index');
     }
-    
- 
+
+
 
     /**
      * @Route("/{id}", name="article_show", methods={"GET"})
@@ -199,5 +201,47 @@ class ArticleController extends AbstractController
             'Nextarticle3' => $articlerep->find(($article->getId()) + 3),
             'Nextarticle4' => $articlerep->find(($article->getId()) + 4)
         ]);
+    }
+
+    /**
+     *@Route("/like/{id}" , name="article_like")
+     */
+    public function Like(Article $article, ArticleLikeRepository $likerepo, ObjectManager $manager): Response
+    {
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->json(
+                [
+                    'message' => 'you must Login First !!'
+                ],
+                403
+            );
+        }
+
+        if ($article->IsLikedBy($user)) {
+
+            $like = $likerepo->findOneBy([
+                'article' => $article,
+                'user' => $user
+            ]);
+            $manager->remove($like);
+            $manager->flush();
+            return $this->json([
+                'message' => 'Like Deleted',
+                'like' => $likerepo->count([
+                    'article' => $article
+                ])
+            ], 200);
+        }
+        $Like = new ArticleLike();
+        $Like->setArticle($article)
+            ->setUser($user);
+        $manager->persist($Like);
+        $manager->flush();
+
+        return $this->json([
+            'message' => 'Finally',
+            'likes' => $likerepo->count(['article' => $article])
+        ], 200);
     }
 }

@@ -2,13 +2,17 @@
 
 namespace App\Entity;
 
+use App\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Security\Core\User\UserInterface;
+use Doctrine\Common\Collections\Collection;
+use phpDocumentor\Reflection\Types\Boolean;
 use Symfony\Component\HttpFoundation\File\File;
+use Doctrine\Common\Collections\ArrayCollection;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ArticleRepository")
@@ -16,7 +20,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @Vich\Uploadable
  */
 
-class Article 
+class Article
 {
     /**
      * @ORM\Id()
@@ -40,17 +44,17 @@ class Article
      */
     private $art_qte;
 
-     /**
+    /**
      * @ORM\Column(type="float")
      */
-    private $art_total;
+    private $art_total = 0;
 
     /**
      * @ORM\Column(type="float", nullable=true)
      */
     private $art_remise;
 
-   /**
+    /**
      * @var string|null
      * @ORM\Column(type="string", length=255, nullable=false)
      */
@@ -58,16 +62,30 @@ class Article
     /** 
 
 
-    * @var File|null
-    * 
-    * @Vich\UploadableField(mapping="property_image", fileNameProperty="art_filename")
-    */
-   private $art_imageFile;
+     * @var File|null
+     * 
+     * @Vich\UploadableField(mapping="property_image", fileNameProperty="art_filename")
+     */
+    private $art_imageFile;
 
     /**
      * @ORM\Column(type="datetime")
      */
     private $updated_at;
+
+    /**
+     * Undocumented variable
+     *
+     * @ORM\OneToMany(targetEntity="App\Entity\ArticleLike" , mappedBy="article")
+     */
+    private $artcileLikes;
+
+    public function __construct()
+    {
+        $this->artcileLikes = new ArrayCollection();
+    }
+
+
 
     public function getId(): ?int
     {
@@ -128,7 +146,7 @@ class Article
     {
         return $this->art_filename;
     }
-/**
+    /**
      * @param string|null $art_filename
      * @return Article
      */
@@ -150,7 +168,7 @@ class Article
 
         return $this;
     }
-      /**
+    /**
      * @return File|null
      */
     public function getArtImageFile(): ?File
@@ -199,4 +217,43 @@ class Article
         return $this;
     }
 
+    /**
+     * @return Collection|ArticleLike[]
+     */
+    public function getArtcileLikes(): Collection
+    {
+        return $this->artcileLikes;
+    }
+
+    public function addArtcileLike(ArticleLike $artcileLike): self
+    {
+        if (!$this->artcileLikes->contains($artcileLike)) {
+            $this->artcileLikes[] = $artcileLike;
+        }
+
+        return $this;
+    }
+
+    public function removeArtcileLike(ArticleLike $artcileLike): self
+    {
+        if ($this->artcileLikes->contains($artcileLike)) {
+            $this->artcileLikes->removeElement($artcileLike);
+        }
+
+        return $this;
+    }
+    /**
+     * Undocumented function
+     *
+     * @param User $user
+     * @return Boolean
+     */
+    public function IsLikedBy(User $user): bool
+    {
+        foreach ($this->artcileLikes as $like) {
+            if ($like->getUser() === $user)
+                return true;
+        }
+        return false;
+    }
 }
