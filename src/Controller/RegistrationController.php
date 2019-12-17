@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Form\ResgisterType;
 use Doctrine\ORM\Mapping as ORM;
 use App\Form\RegistrationFormType;
+
 use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;

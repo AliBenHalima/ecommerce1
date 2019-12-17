@@ -2,12 +2,15 @@
 
 namespace App\Controller;
 
-use App\Entity\Article;
-use App\Entity\ArticleLike;
 use App\Entity\User;
+use App\Entity\Search;
+use App\Entity\Article;
 use App\Form\ArticleType;
-use App\Repository\ArticleLikeRepository;
+use App\Entity\ArticleLike;
+use App\Entity\Categorie;
+use App\Form\SearchType;
 use App\Repository\ArticleRepository;
+use App\Repository\ArticleLikeRepository;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -66,15 +69,20 @@ class ArticleController extends AbstractController
      */
     public function ShowAll(PaginatorInterface $paginator, Request $request, ArticleRepository $repository): Response
     {
-
+        $search = new Search();
+        $form = $this->createForm(SearchType::class, $search);
+        $form->handleRequest($request);
+        // dd($search);
+        // $products = $;
         $articles = $paginator->paginate(
-            $this->repository->FindArticles(),
+            $this->repository->findSearch($search),
             $request->query->getInt('page', 1), /*page number*/
-            6
+            2
         ); /*limit per page*/
 
         return $this->render('article/ShowAll.html.twig', [
-            'articles' => $articles
+            'articles' => $articles,
+            'form' => $form->createView()
 
 
         ]);
@@ -95,7 +103,12 @@ class ArticleController extends AbstractController
         }
         $total = 0;
         foreach ($panier as $id => $qte) {
-            $totalprod = $qte * $articleRepository->find($id)->getArtPrix();
+            $user = $articleRepository->find($id);
+            $price = $user->getArtPrix();
+            if ($user->getPromotion()) {
+                $price = ($price * $user->getArtRemise()) / 100;
+            }
+            $totalprod = $qte * $price;
             $total = $total + $totalprod;
         }
         // dd($panierWithData);
@@ -110,8 +123,9 @@ class ArticleController extends AbstractController
     /**
      * @Route("/panier/add/{id}" , name="panier_add") 
      */
-    public function add($id, SessionInterface $session)
+    public function add($id, SessionInterface $session, Request $request)
     {
+
         $panier = $session->get('panier', []);
         if (!empty($panier[$id])) {
             $panier[$id]++;
@@ -156,6 +170,8 @@ class ArticleController extends AbstractController
      */
     public function edit(Request $request, Article $article): Response
     {
+        //  $cat = new Categorie();
+        // $article->addCategory($cat);
         $form = $this->createForm(ArticleType::class, $article);
         $form->handleRequest($request);
 
@@ -179,7 +195,11 @@ class ArticleController extends AbstractController
     {
         if ($this->isCsrfTokenValid('delete' . $article->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
+            // $art = new ArticleLike();
+            // $article->removeArtcileLike($art);
+
             $entityManager->remove($article);
+
             $entityManager->flush();
         }
 

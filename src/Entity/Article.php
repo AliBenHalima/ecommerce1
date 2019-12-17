@@ -80,9 +80,20 @@ class Article
      */
     private $artcileLikes;
 
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $promotion;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Categorie", inversedBy="articles")
+     */
+    private $categories;
+
     public function __construct()
     {
         $this->artcileLikes = new ArrayCollection();
+        $this->categories = new ArrayCollection();
     }
 
 
@@ -255,5 +266,48 @@ class Article
                 return true;
         }
         return false;
+    }
+
+    public function getPromotion(): ?bool
+    {
+        return $this->promotion;
+    }
+
+    public function setPromotion(?bool $promotion): self
+    {
+        $this->promotion = $promotion;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Categorie[]
+     */
+    public function getCategories(): Collection
+    {
+        return $this->categories;
+    }
+
+    public function addCategory(Categorie $category): self
+    {
+        if (!$this->categories->contains($category)) {
+            $this->categories[] = $category;
+            $category->setArticles($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCategory(Categorie $category): self
+    {
+        if ($this->categories->contains($category)) {
+            $this->categories->removeElement($category);
+            // set the owning side to null (unless already changed)
+            if ($category->getArticles() === $this) {
+                $category->setArticles(null);
+            }
+        }
+
+        return $this;
     }
 }

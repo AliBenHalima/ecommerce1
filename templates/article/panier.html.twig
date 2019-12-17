@@ -18,9 +18,21 @@
 
     <tr>
       <th scope="row">{{item.product.artDescription}}</th>
-      <th scope="row">{{item.product.artPrix}}</th>
+       {% if item.product.promotion %}
+        
+     
+      <th scope="row"> <span class="text-warning">{{item.product.artPrix * item.product.artRemise /100 }} </span> </th>
+      
+{% else %}
+     <th scope="row">{{item.product.artPrix }}</th>
+      {% endif %}
       <th scope="row">{{item.qte}}</th>
-      <th scope="row">{{item.product.artPrix * item.qte }}</th>
+     {% if item.product.promotion %}
+        
+      <th scope="row"> {{item.product.artPrix * item.product.artRemise /100 * item.qte }}</th>
+     {% else %}
+       <th scope="row">{{item.product.artPrix * item.qte }}</th>
+        {% endif %}
       <th scope="row"> <a href="{{path('panier_remove',{'id': item.product.id}) }}" > <i class="fa fa-trash" aria-hidden="true"></i> </a>
 
 

@@ -1,3 +1,8 @@
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/css/select2.min.css">
+
+{% endblock %}
 <div class="card mb-4">
  {% if article.artFilename %}
         {#<img src="{{ vich_uploader_asset(property,'imageFile') | imagine_filter('thumb') }}" alt="card-img-top" style="width: 100%; height: auto;">
@@ -8,7 +13,10 @@
     {% endif %}
     <div class="card-body">
         <a href="{{path('product',{'id': article.id})}}" class="card-title text-danger text-center"> {{ article.artDescription }} </a>
-       <a href="{{path('article_like',{'id' : article.id}) }}" class="btn btn-link text-center"> 
+     
+      
+<a href="{{path('panier_add',{'id': article.id})}}" class="btn btn-success float-right" > <i class="fal fa-shopping-cart">{{article.artPrix }} DT </i></a>
+        <a href="{{path('article_like',{'id' : article.id}) }}" class="btn btn-link text-center"> 
        {% if app.user and article.isLikedBy(app.user) %}
      <i class="fas fa-thumbs-up" style="font-size:38px;"></i>
        {% else %}
@@ -16,8 +24,9 @@
            
        {% endif %} 
         <span class="text-center"> {{article.artcileLikes | length}} </span> </a>
-<a href="{{path('panier_add',{'id': article.id})}}" class="btn btn-success float-right" > <i class="fal fa-shopping-cart"> </i>ADD </a>
-       
+       {% if (article.promotion) %}
+     <h3 class="text-center"> <span class="badge badge-warning ">   Promotion de  {{article.artRemise}} % !!!</span></h3>
+       {% endif %}  
            {# <a href="{{ path('property.show', {'id': article.id}) }}"> 
                 
             </a> #}
@@ -40,7 +49,7 @@
 
         axios.get(url).then(function(response){
             // console.log(response); 
-            let likes = response.data.likes ; 
+            const likes = response.data.likes ; 
             spanCount.textContent = likes ;
             if(icon.classList.contains('fas')){
                 icon.classList.replace('fas','far') ;
@@ -59,8 +68,11 @@
         link.addEventListener('click',OnClickBtnLike);
     });
 
-
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/js/select2.min.js"></script>
+<script>
+    $('select').select2();
+</script>
     </script>
          
+
     {% endblock %}
