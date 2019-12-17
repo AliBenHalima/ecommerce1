@@ -12,7 +12,11 @@
      <img src="{{'/images/properties/empty.jpg'}}" alt="card-img-top" style="width: 100%; height: auto;">
     {% endif %}
     <div class="card-body">
-        <a href="{{path('product',{'id': article.id})}}" class="card-title text-danger text-center"> {{ article.artDescription }} </a>
+        <a href="{{path('product',{'id': article.id})}}" class="card-title text-danger text-center"> {{ article.artDescription }}   </a>
+        {# {% if article.artQte | length  > 0 %} #}
+            {# <span class="text-primary text-center"> {{article.artQte}} Left</span> #}
+        {# {% endif %} #}
+          
      
       
 <a href="{{path('panier_add',{'id': article.id})}}" class="btn btn-success float-right" > <i class="fal fa-shopping-cart">{{article.artPrix }} DT </i></a>
@@ -27,6 +31,7 @@
        {% if (article.promotion) %}
      <h3 class="text-center"> <span class="badge badge-warning ">   Promotion de  {{article.artRemise}} % !!!</span></h3>
        {% endif %}  
+    
            {# <a href="{{ path('property.show', {'id': article.id}) }}"> 
                 
             </a> #}

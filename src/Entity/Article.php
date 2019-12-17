@@ -56,7 +56,7 @@ class Article
 
     /**
      * @var string|null
-     * @ORM\Column(type="string", length=255, nullable=false)
+     * @ORM\Column(type="string", length=254, nullable=false)
      */
     private $art_filename;
     /** 
@@ -76,7 +76,7 @@ class Article
     /**
      * Undocumented variable
      *
-     * @ORM\OneToMany(targetEntity="App\Entity\ArticleLike" , mappedBy="article")
+     * @ORM\OneToMany(targetEntity="App\Entity\ArticleLike" , mappedBy="article",cascade={"persist", "remove"}))
      */
     private $artcileLikes;
 

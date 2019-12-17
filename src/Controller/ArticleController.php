@@ -111,6 +111,7 @@ class ArticleController extends AbstractController
             $totalprod = $qte * $price;
             $total = $total + $totalprod;
         }
+
         // dd($panierWithData);
 
         return $this->render('article/panier.html.twig', [
@@ -118,6 +119,21 @@ class ArticleController extends AbstractController
             'total' => $total
             //'article' => $panierWithData['product']
         ]);
+    }
+    /**
+     * unset cookies when I Click on "PAY"
+     * @Route("/unset" , name="unsetCookies")
+     * @param SessionInterface $session
+     * @return void
+     */
+    public function unsetCookies(SessionInterface $session)
+    {
+        $panier = $session->get('panier', []);
+        foreach ($panier as $id => $qte) {
+            unset($panier[$id]);
+            $session->set('panier', $panier);
+        }
+        return $this->redirectToRoute('panier_index');
     }
 
     /**
