@@ -2,13 +2,15 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Entity\Categorie;
 use App\Form\CategorieType;
+use App\Repository\UserRepository;
 use App\Repository\CategorieRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
  * @Route("/categorie")
@@ -18,10 +20,15 @@ class CategorieController extends AbstractController
     /**
      * @Route("/", name="categorie_index", methods={"GET"})
      */
-    public function index(CategorieRepository $categorieRepository): Response
+    public function index(CategorieRepository $categorieRepository, UserRepository $rep): Response
     {
+        $user = new User();
+        if ($this->getUser() != NULL) {
+            $user = $rep->find($this->getUser()->getId());
+        }
         return $this->render('categorie/index.html.twig', [
             'categories' => $categorieRepository->findAll(),
+            'user' => $user
         ]);
     }
 
@@ -83,7 +90,7 @@ class CategorieController extends AbstractController
      */
     public function delete(Request $request, Categorie $categorie): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$categorie->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $categorie->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($categorie);
             $entityManager->flush();

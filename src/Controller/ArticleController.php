@@ -48,8 +48,10 @@ class ArticleController extends AbstractController
      */
     public function index(ArticleRepository $articleRepository): Response
     {
+        $user = $this->GetAppUser($this->rep);
         return $this->render('article/index.html.twig', [
             'articles' => $articleRepository->findAll(),
+            'user' => $user
         ]);
     }
 
