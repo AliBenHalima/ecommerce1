@@ -1,63 +1,89 @@
 {% extends "base.html.twig" %}
- {%   block body  %}
- <div class="container">
-<table class="table">
-  <thead>
-    <tr>
-      <th scope="col">Product Name</th>
-      <th scope="col">Price</th>
-      <th scope="col">Amount</th>
-     <th scope="col">Total</th>
-    </tr>
-  </thead>
-  <tbody>
-  {% if items is defined %}
-      
-  
-  {% for item in items %}
-
-    <tr>
-      <th scope="row">{{item.product.artDescription}}</th>
-       {% if item.product.promotion %}
-        
-     
-      <th scope="row"> <span class="text-warning">{{item.product.artPrix * item.product.artRemise /100 }} </span> </th>
-      
-{% else %}
-     <th scope="row">{{item.product.artPrix }}</th>
-      {% endif %}
-      <th scope="row">{{item.qte}}</th>
-     {% if item.product.promotion %}
-        
-      <th scope="row"> {{item.product.artPrix * item.product.artRemise /100 * item.qte }}</th>
-     {% else %}
-       <th scope="row">{{item.product.artPrix * item.qte }}</th>
-        {% endif %}
-      <th scope="row"> <a href="{{path('panier_remove',{'id': item.product.id}) }}" > <i class="fa fa-trash" aria-hidden="true"></i> </a>
 
 
-    </tr>
+{% block body %}
+	<div class="container">
+		<table class="table">
+			<thead>
+				<tr>
+					<th scope="col">Product Name</th>
+					<th scope="col">Price</th>
+					<th scope="col">Amount</th>
+					<th scope="col">Total</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% if items is defined %}
+					{% for item in items %}
 
-    {% endfor %}
-{% endif %}
- 
-  </tbody>
-  <tfooter>
-    <tr>
-        <td colspan="3" >  <h4> total : </h4>  </td>
-  {% if total > 300 %}
-    <td> <h4><strike > {{ total }} </strike ></h4> <h4  class="text-primary"> / {{ (total * 80) /100 }} </h4></td>
-   
- 
-  {% else %}
-  <td> <h4> {{ total }}  </h4></td>
-         {% endif %}
-        <td> <a href="{{path('unsetCookies') }}" class="btn btn-success" > Pay <i class="fa fa-cc-paypal" ></i> </a>
-  </tfooter>
-</table>
-</div>
+						<tr>
+							<th scope="row">{{ item.product.artDescription }}</th>
+							{% if item.product.promotion %}
 
+								<th scope="row">
+									<span class="text-warning">{{ (item.product.artPrix * item.product.artRemise) / 100 }}
+									</span>
+								</th>
 
+							{% else %}
+								<th scope="row">{{ item.product.artPrix }}</th>
+							{% endif %}
+							<th scope="row">{{ item.qte }}</th>
+							{% if item.product.promotion %}
 
-    
+								<th scope="row">
+									{{
+            ((item.product.artPrix * item.product.artRemise) / 100) * item.qte
+          }}
+								</th>
+							{% else %}
+								<th scope="row">{{ item.product.artPrix * item.qte }}</th>
+							{% endif %}
+							<th scope="row">
+								<a href="{{ path('panier_remove', { id: item.product.id }) }}">
+									<i class="fa fa-trash" aria-hidden="true"></i>
+								</a>
+							</th>
+						</tr>
+
+					{% endfor %}
+				{% endif %}
+			</tbody>
+			<tfooter>
+				<tr>
+					<td colspan="3">
+						<h4>
+							total :
+						</h4>
+					</td>
+					{% if total > 300 %}
+						<td>
+							<h4>
+								<strike>
+									{{ total }}
+								</strike>
+							</h4>
+							<h4 class="text-primary">
+								/
+								{{ (total * 80) / 100 }}
+							</h4>
+						</td>
+
+					{% else %}
+						<td>
+							<h4>
+								{{ total }}
+							</h4>
+						</td>
+					{% endif %}
+					<td>
+						<a href="{{ path('unsetCookies') }}" class="btn btn-success">
+							Pay
+							<i class="fa fa-cc-paypal"></i>
+						</a>
+					</td>
+				</tr>
+			</tfooter>
+		</table>
+	</div>
 {% endblock %}

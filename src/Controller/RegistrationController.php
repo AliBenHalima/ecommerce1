@@ -64,9 +64,10 @@ class RegistrationController extends AbstractController
     public function index(UserRepository $userrepository): Response
     {
         if ($this->getUser() == NULL) { //getUser() returns the Current User yeeey
-            return $this->render('base.html.twig');
-        } else { }
-        return $this->render('base.html.twig', [
+            return $this->render('welcome.html.twig');
+        } else {
+        }
+        return $this->render('welcome.html.twig', [
             'user' => $userrepository->find($this->getUser()->getId()),
         ]);
     }

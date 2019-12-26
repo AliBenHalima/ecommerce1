@@ -5,10 +5,13 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Entity\Search;
 use App\Entity\Article;
+use App\Entity\Contact;
+use App\Form\SearchType;
+use App\Entity\Categorie;
 use App\Form\ArticleType;
 use App\Entity\ArticleLike;
-use App\Entity\Categorie;
-use App\Form\SearchType;
+use App\Form\ContactType;
+use App\Repository\UserRepository;
 use App\Repository\ArticleRepository;
 use App\Repository\ArticleLikeRepository;
 use Knp\Component\Pager\PaginatorInterface;
@@ -24,10 +27,21 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
  */
 class ArticleController extends AbstractController
 {
-    public function __construct(ArticleRepository $repository, ObjectManager $em)
+    public function __construct(ArticleRepository $repository, ObjectManager $em, UserRepository $rep)
     {
         $this->repository = $repository;
         $this->em = $em;
+        $this->rep = $rep;
+    }
+
+
+    public function GetAppUser($rep)
+    {
+        $user = new User();
+        if ($this->getUser() != NULL) {
+            $user = $rep->find($this->getUser()->getId());
+        }
+        return $user;
     }
     /**
      * @Route("/", name="article_index", methods={"GET"})
@@ -67,8 +81,11 @@ class ArticleController extends AbstractController
      * @param Request $request
      * @param ArticleRepository $repository
      */
-    public function ShowAll(PaginatorInterface $paginator, Request $request, ArticleRepository $repository): Response
+    public function ShowAll(PaginatorInterface $paginator, Request $request, ArticleRepository $repository, UserRepository $rep): Response
     {
+        $user = new User();
+        if ($this->getUser() != NULL)
+            $user = $rep->find($this->getUser()->getId());
         $search = new Search();
         $form = $this->createForm(SearchType::class, $search);
         $form->handleRequest($request);
@@ -82,6 +99,7 @@ class ArticleController extends AbstractController
 
         return $this->render('article/ShowAll.html.twig', [
             'articles' => $articles,
+            'user' => $user,
             'form' => $form->createView()
 
 
@@ -91,14 +109,17 @@ class ArticleController extends AbstractController
     /**
      * @Route("/panier" , name="panier_index") 
      */
-    public function panierIndex(SessionInterface $session, ArticleRepository $articleRepository)
+    public function panierIndex(UserRepository $rep, SessionInterface $session, ArticleRepository $articleRepository)
     {
+        $user = $this->GetAppUser($rep);
+
         $panier = $session->get('panier', []);
+
         $panierWithData = [];
         foreach ($panier as $id => $qte) {
             $panierWithData[] = [
                 'product' => $articleRepository->find($id),
-                'qte' => $qte
+                'qte' => $qte,
             ];
         }
         $total = 0;
@@ -116,7 +137,8 @@ class ArticleController extends AbstractController
 
         return $this->render('article/panier.html.twig', [
             'items' => $panierWithData,
-            'total' => $total
+            'total' => $total,
+            'user' => $user
             //'article' => $panierWithData['product']
         ]);
     }
@@ -150,10 +172,11 @@ class ArticleController extends AbstractController
         }
         $session->set('panier', $panier);
         // dd($panier);
-        return $this->redirectToRoute('property.ShowAll');
+        // return $this->redirectToRoute('property.ShowAll');
         //  return $this->render('article/panier.html.twig', [
         //   'panier' => $panier
         // ]);
+        return;
     }
     /**
      * @Route("/panier/remove/{id}" , name="panier_remove")
@@ -176,8 +199,10 @@ class ArticleController extends AbstractController
      */
     public function show(Article $article): Response
     {
+        $user = $this->GetAppUser($this->rep);
         return $this->render('article/show.html.twig', [
             'article' => $article,
+            'user' => $user
         ]);
     }
 
@@ -186,6 +211,7 @@ class ArticleController extends AbstractController
      */
     public function edit(Request $request, Article $article): Response
     {
+        $user = $this->GetAppUser($this->rep);
         //  $cat = new Categorie();
         // $article->addCategory($cat);
         $form = $this->createForm(ArticleType::class, $article);
@@ -200,6 +226,7 @@ class ArticleController extends AbstractController
         return $this->render('article/edit.html.twig', [
             'article' => $article,
             'form' => $form->createView(),
+            'user' => $user
         ]);
     }
 
@@ -228,6 +255,7 @@ class ArticleController extends AbstractController
      */
     public function product(Article $article, ArticleRepository $articlerep): Response
     {
+        $user = $this->GetAppUser($this->rep);
         //$articID = $article->getId();
 
         return $this->render('product.html.twig', [
@@ -235,7 +263,8 @@ class ArticleController extends AbstractController
             'Nextarticle1' => $articlerep->find(($article->getId()) + 1),
             'Nextarticle2' => $articlerep->find(($article->getId()) + 2),
             'Nextarticle3' => $articlerep->find(($article->getId()) + 3),
-            'Nextarticle4' => $articlerep->find(($article->getId()) + 4)
+            'Nextarticle4' => $articlerep->find(($article->getId()) + 4),
+            'user' => $user,
         ]);
     }
 
