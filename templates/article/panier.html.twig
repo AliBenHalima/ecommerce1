@@ -21,7 +21,8 @@
 							{% if item.product.promotion %}
 
 								<th scope="row">
-									<span class="text-warning">{{ (item.product.artPrix * item.product.artRemise) / 100 }}
+									<span class="text-warning">{{ (item.product.artPrix - ((item.product.artPrix * item.product.artRemise) / 100))  }}
+
 									</span>
 								</th>
 
@@ -33,7 +34,8 @@
 
 								<th scope="row">
 									{{
-            ((item.product.artPrix * item.product.artRemise) / 100) * item.qte
+(item.product.artPrix - ((item.product.artPrix * item.product.artRemise) / 100)) * item.qte
+
           }}
 								</th>
 							{% else %}
@@ -66,6 +68,8 @@
 							<h4 class="text-primary">
 								/
 								{{ (total * 80) / 100 }}
+								(-20%)
+
 							</h4>
 						</td>
 

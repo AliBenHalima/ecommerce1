@@ -38,12 +38,12 @@ class ArticleRepository extends ServiceEntityRepository
             $query = $query->andWhere('p.art_description LIKE :val')
                 ->setParameter('val', "%{$search->getSearchtext()}%");
         }
-        if (!empty($search->getMin())) {
+        if ($search->getMin()) {
             $query = $query->andWhere('p.art_prix >= :min')
                 ->setParameter('min', $search->getMin());
         }
         if ($search->getMax()) {
-            $query = $query->andWhere('p.art_prix >= :max')
+            $query = $query->andWhere('p.art_prix <= :max')
                 ->setParameter('max', $search->getMax());
         }
         if ($search->getPromotion()) {

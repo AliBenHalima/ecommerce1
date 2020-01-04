@@ -96,7 +96,7 @@ class ArticleController extends AbstractController
         $articles = $paginator->paginate(
             $this->repository->findSearch($search),
             $request->query->getInt('page', 1), /*page number*/
-            2
+            10
         ); /*limit per page*/
 
         return $this->render('article/ShowAll.html.twig', [
@@ -129,7 +129,7 @@ class ArticleController extends AbstractController
             $user = $articleRepository->find($id);
             $price = $user->getArtPrix();
             if ($user->getPromotion()) {
-                $price = ($price * $user->getArtRemise()) / 100;
+                $price = ($price * (100 - $user->getArtRemise())) / 100;
             }
             $totalprod = $qte * $price;
             $total = $total + $totalprod;
@@ -140,7 +140,7 @@ class ArticleController extends AbstractController
         return $this->render('article/panier.html.twig', [
             'items' => $panierWithData,
             'total' => $total,
-            'user' => $user
+            'user' => $user,
             //'article' => $panierWithData['product']
         ]);
     }
@@ -165,7 +165,7 @@ class ArticleController extends AbstractController
      */
     public function add($id, SessionInterface $session, Request $request)
     {
-
+        $user = $this->GetAppUser($this->rep);
         $panier = $session->get('panier', []);
         if (!empty($panier[$id])) {
             $panier[$id]++;
@@ -174,11 +174,16 @@ class ArticleController extends AbstractController
         }
         $session->set('panier', $panier);
         // dd($panier);
-        // return $this->redirectToRoute('property.ShowAll');
+        return $this->redirectToRoute('property.ShowAll');
+        //  return $this->render('article/ShowAll.html.twig', [
+        //  'panier' => $panier,
+        // 'user' => $user
+        //  ]);
         //  return $this->render('article/panier.html.twig', [
-        //   'panier' => $panier
-        // ]);
-        return;
+        //  'panier' => $panier,
+        //  'user' => $user
+        //]);
+        //   return;
     }
     /**
      * @Route("/panier/remove/{id}" , name="panier_remove")
@@ -262,10 +267,10 @@ class ArticleController extends AbstractController
 
         return $this->render('product.html.twig', [
             'article' => $article,
-            'Nextarticle1' => $articlerep->find(($article->getId()) + 1),
-            'Nextarticle2' => $articlerep->find(($article->getId()) + 2),
-            'Nextarticle3' => $articlerep->find(($article->getId()) + 3),
-            'Nextarticle4' => $articlerep->find(($article->getId()) + 4),
+            'Nextarticle1' => $articlerep->find(($article->getId()) ),
+            'Nextarticle2' => $articlerep->find(($article->getId()) ),
+            'Nextarticle3' => $articlerep->find(($article->getId())),
+            'Nextarticle4' => $articlerep->find(($article->getId())) ,
             'user' => $user,
         ]);
     }

@@ -17,12 +17,12 @@ class ArticleLike
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Article", inversedBy="article" )
+     * @ORM\ManyToOne(targetEntity="App\Entity\Article", inversedBy="artcileLikes" ) //article
      */
     private $article;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="article" )
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="userLikes" ) // article
      */
     private $user;
 
