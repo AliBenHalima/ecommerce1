@@ -27,14 +27,14 @@ class User implements UserInterface, \Serializable
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=180, unique=true)
+     * @ORM\Column(type="string", length=181, unique=true)
      */
     private $username;
 
     /**
      * @ORM\Column(type="json")
      */
-    private $roles = [];
+    private $roles = ['ROLE_ADMIN'];
 
     /**
      * @var string The hashed password
@@ -43,7 +43,7 @@ class User implements UserInterface, \Serializable
     private $password;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=253)
      */
     private $sexe;
 
@@ -63,7 +63,7 @@ class User implements UserInterface, \Serializable
     private $tel;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=254)
      */
     private $adresse;
 
@@ -75,7 +75,7 @@ class User implements UserInterface, \Serializable
 
     /**
      * @var string|null
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=254, nullable=true)
      */
     private $filename;
     /** 
@@ -167,10 +167,11 @@ class User implements UserInterface, \Serializable
     {
         $roles = $this->roles;
         // guarantee every user at least has ROLE_USER
-        if (in_array('ROLE_USER', $roles) === false) {
-            $roles[] = 'ROLE_USER';
-        }
-        return array_unique($roles);
+        // if (in_array('ROLE_USER', $roles) === false) {
+           // $roles[] = 'ROLE_USER';
+        // }
+        // return array_unique($roles);
+        return $roles ;
     }
 
     public function setRoles(array $roles): self

@@ -42,17 +42,32 @@
 						<a class="active" href="{{ path("base")}}">Home</a>
 					</li>
 					<li>
-						<a href="#">Shop</a>
+					<ul>
+					{% set role = '' %}
+					{% if app.user %}
+					{% for it in app.user.roles  %}
+						{% set role = it %}
+					{% endfor %}
+					{% endif %}
+					{# {% if role =="ROLE_ADMIN" %} #}
+						
+					
+					
+						<a href="#">edit </a>
+				
+						
+					{# {% endif %} #}
+						</ul>
+						
 						<ul class="sub-menu">
-							<li>
-								<a href="product-page.html">Product Page</a>
+						
+						
+							 <li>
+								<a  href="{{ path("article_index")}}"> Article</a>
 							</li>
 							<li>
-								<a href="shopping-cart.html">Shopping Card</a>
-							</li>
-							<li>
-								<a href="check-out.html">Check out</a>
-							</li>
+								<a href="{{ path("categorie_index")}}"> Categories</a>
+							</li> 
 						</ul>
 					</li>
 

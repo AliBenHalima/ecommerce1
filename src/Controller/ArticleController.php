@@ -96,7 +96,7 @@ class ArticleController extends AbstractController
         $articles = $paginator->paginate(
             $this->repository->findSearch($search),
             $request->query->getInt('page', 1), /*page number*/
-            10
+            4
         ); /*limit per page*/
 
         return $this->render('article/ShowAll.html.twig', [
@@ -171,6 +171,7 @@ class ArticleController extends AbstractController
             $panier[$id]++;
         } else {
             $panier[$id] = 1;
+           
         }
         $session->set('panier', $panier);
         // dd($panier);
