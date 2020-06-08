@@ -32,6 +32,9 @@ class ContactController extends AbstractController
         $this->repository = $repository;
         $this->em = $em;
     }
+
+    // for the contact Form...
+
     /**
      * Formulaire de Contact
      * @Route("/contact" , name="contact")
@@ -39,7 +42,7 @@ class ContactController extends AbstractController
     public function contact(Request $request, UserRepository $rep)
     {
         $user = new User();
-        if ($this->getUser() != NULL) {
+        if ($this->getUser() != NULL) {   // get current user Id
             $user = $rep->find($this->getUser()->getId());
         }
 

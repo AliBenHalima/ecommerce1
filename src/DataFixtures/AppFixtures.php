@@ -10,6 +10,7 @@ use App\Repository\UserRepository;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
 
+// USED TO LOAD FAKE DATA !!!!
 
 class AppFixtures extends Fixture
 {
@@ -21,7 +22,7 @@ class AppFixtures extends Fixture
         $this->articleRep = $articleRep;
     }
     /**
-     * Undocumented function
+     *
      *
      * @param ObjectManager $manager
      * @return void

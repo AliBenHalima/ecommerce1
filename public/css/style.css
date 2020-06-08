@@ -2362,3 +2362,11 @@ ol {
 		padding: 10px 0;
 	}
 }
+.classNotification{
+	height: 50px;
+	size : 35 px;
+	letter-spacing: 0.093em;
+	font-weight: 400;
+	color: gray;
+	/* background-color: #b0bcc2; */
+}

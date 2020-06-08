@@ -17,6 +17,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
  */
 class CategorieController extends AbstractController
 {
+    // find all cathegories
     /**
      * @Route("/", name="categorie_index", methods={"GET"})
      */
@@ -24,7 +25,7 @@ class CategorieController extends AbstractController
     {
         $user = new User();
         if ($this->getUser() != NULL) {
-            $user = $rep->find($this->getUser()->getId());
+            $user = $rep->find($this->getUser()->getId()); // get the id of the current User (this blog of code will be repeated frequently)
         }
         return $this->render('categorie/index.html.twig', [
             'categories' => $categorieRepository->findAll(),
@@ -32,13 +33,14 @@ class CategorieController extends AbstractController
         ]);
     }
 
+    // create a new category
     /**
      * @Route("/new", name="categorie_new", methods={"GET","POST"})
      */
     public function new(Request $request): Response
     {
         $categorie = new Categorie();
-        $form = $this->createForm(CategorieType::class, $categorie);
+        $form = $this->createForm(CategorieType::class, $categorie); // create form of the Categorie
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -55,6 +57,9 @@ class CategorieController extends AbstractController
         ]);
     }
 
+
+    //get category by id
+
     /**
      * @Route("/{id}", name="categorie_show", methods={"GET"})
      */
@@ -65,6 +70,8 @@ class CategorieController extends AbstractController
         ]);
     }
 
+
+    //edit a category
     /**
      * @Route("/{id}/edit", name="categorie_edit", methods={"GET","POST"})
      */
@@ -84,6 +91,8 @@ class CategorieController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
+// Delete a category
 
     /**
      * @Route("/{id}", name="categorie_delete", methods={"DELETE"})

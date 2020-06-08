@@ -17,7 +17,7 @@
     "doctrine/cache": {
         "version": "1.8.2"
     },
-    "doctrine/collections": {
+    "doctrine/collections": { 
         "version": "1.6.3"
     },
     "doctrine/common": {

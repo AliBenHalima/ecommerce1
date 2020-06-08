@@ -24,31 +24,28 @@ class RegistrationController extends AbstractController
         $this->em = $em;
     }
 
-    // public function users()
-    // {
-    //     for($i=1 ; $i<$this->getUser())
-    //  }
+  // Registration form
+
     /**
      * @Route("/register", name="app_register")
      */
     public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder): Response
     {
         $user = new User();
-        $form = $this->createForm(ResgisterType::class, $user);
+        $form = $this->createForm(ResgisterType::class, $user); // form
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             // encode the plain password
             $user->setPassword(
                 $passwordEncoder->encodePassword($user, $form->get('password')->getData()) //similar to $user->getPassword()
-
+                // encode password and save it in data base as encrypted for more security
             );
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
             $entityManager->flush();
 
-            // do anything else you need here, like send an email
 
             return $this->redirectToRoute('base');
         }
@@ -71,6 +68,8 @@ class RegistrationController extends AbstractController
             'user' => $userrepository->find($this->getUser()->getId()),
         ]);
     }
+
+    // Show Profile for a particular User
 
     /**
      * @Route("/profil/{id}", name="profil")
