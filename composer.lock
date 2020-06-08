@@ -14,7 +14,7 @@
                 "url": "https://github.com/Behat/Transliterator.git",
                 "reference": "826ce7e9c2a6664c0d1f381cbb38b1fb80a7ee2c"
             },
-            "dist": {
+            "dist": { 
                 "type": "zip",
                 "url": "https://api.github.com/repos/Behat/Transliterator/zipball/826ce7e9c2a6664c0d1f381cbb38b1fb80a7ee2c",
                 "reference": "826ce7e9c2a6664c0d1f381cbb38b1fb80a7ee2c",
